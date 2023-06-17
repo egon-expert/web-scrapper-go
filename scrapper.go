@@ -13,6 +13,12 @@ type PokemonProduct struct {
 	url, image, name, price string
 }
 
+// definy output file
+const FILE_OUTPUT = "output.csv"
+
+// define targer URL
+const TARGET_URL = "https://scrapeme.live/shop/page/1/"
+
 // it verifies if a string is present in a slice
 func contains(s []string, str string) bool {
 	for _, v := range s {
@@ -25,6 +31,14 @@ func contains(s []string, str string) bool {
 }
 
 func main() {
+
+	// reset output.csv if exists
+	_, err := os.Stat(FILE_OUTPUT)
+
+	if os.IsExist(err) {
+		os.Remove(FILE_OUTPUT)
+	}
+
 	// initializing the slice of structs that will contain the scraped data
 	var pokemonProducts []PokemonProduct
 
@@ -32,7 +46,7 @@ func main() {
 	var pagesToScrape []string
 
 	// the first pagination URL to scrape
-	pageToScrape := "https://scrapeme.live/shop/page/1/"
+	pageToScrape := TARGET_URL
 
 	// initializing the list of pages discovered with a pageToScrape
 	pagesDiscovered := []string{pageToScrape}
@@ -93,7 +107,7 @@ func main() {
 	c.Visit(pageToScrape)
 
 	// opening the CSV file
-	file, err := os.Create("products.csv")
+	file, err := os.Create(FILE_OUTPUT)
 	if err != nil {
 		log.Fatalln("Failed to create output CSV file", err)
 	}
